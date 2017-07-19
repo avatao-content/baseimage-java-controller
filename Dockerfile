@@ -4,7 +4,7 @@ MAINTAINER Gergo Turcsanyi <gergo.turcsanyi@avatao.com>
 USER root
 
 RUN apt-get update \
-	&& apt-get install -qy openjdk-7-jdk
+	&& apt-get install -qy openjdk-8-jdk
 
 COPY ./ /
 
