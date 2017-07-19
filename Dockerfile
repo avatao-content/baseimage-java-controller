@@ -1,4 +1,4 @@
-FROM avatao/controller:ubuntu-14.04
+FROM avatao/controller:ubuntu-16.04
 MAINTAINER Gergo Turcsanyi <gergo.turcsanyi@avatao.com>
 
 USER root
