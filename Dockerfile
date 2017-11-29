@@ -9,8 +9,13 @@ ARG MAVEN_BASE_URL=https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION
 USER root
 
 #Install Java
+#TODO: switch to 32 bit but it is 500MB bigger
 RUN apt-get update \
-	&& apt-get install -qy openjdk-8-jdk
+	&& apt-get install -qy --no-install-recommends openjdk-8-jdk-headless \
+  && rm -rf /var/lib/apt/lists/* \
+  && apt-get clean
+
+ENV JAVA_HOME "/usr/lib/jvm/java-8-openjdk-amd64"
 
 #Install Maven
 RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
