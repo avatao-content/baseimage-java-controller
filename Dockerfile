@@ -5,17 +5,38 @@ ARG USER_HOME_DIR="/home/user"
 ARG MAVEN_VERSION=3.5.2
 ARG MAVEN_SHA=707b1f6e390a65bde4af4cdaf2a24d45fc19a6ded00fff02e91626e3e42ceaff
 ARG MAVEN_BASE_URL=https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries
+ARG JAVA_URL=http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-i586.tar.gz
 
 USER root
 
-#Install Java
-#TODO: switch to 32 bit but it is 500MB bigger
-RUN apt-get update \
-	&& apt-get install -qy --no-install-recommends openjdk-8-jdk-headless \
-  && rm -rf /var/lib/apt/lists/* \
-  && apt-get clean
+#Install 32 bit Java
+RUN mkdir -p /opt && curl -jfksSLH "Cookie: oraclelicense=accept-securebackup-cookie" "${JAVA_URL}" \
+      | tar -xzf - -C /opt \
+    && ln -s /opt/jdk1.*.0_* /opt/jdk \
+    && rm -rf /opt/jdk/*src.zip \
+              /opt/jdk/lib/missioncontrol \
+              /opt/jdk/lib/visualvm \
+              /opt/jdk/lib/*javafx* \
+              /opt/jdk/db \
+              /opt/jdk/jre/lib/plugin.jar \
+              /opt/jdk/jre/lib/ext/jfxrt.jar \
+              /opt/jdk/jre/bin/javaws \
+              /opt/jdk/jre/lib/javaws.jar \
+              /opt/jdk/jre/lib/desktop \
+              /opt/jdk/jre/plugin \
+              /opt/jdk/jre/lib/deploy* \
+              /opt/jdk/jre/lib/*javafx* \
+              /opt/jdk/jre/lib/*jfx* \
+              /opt/jdk/jre/lib/i386/libdecora_sse.so \
+              /opt/jdk/jre/lib/i386/libprism_*.so \
+              /opt/jdk/jre/lib/i386/libfxplugins.so \
+              /opt/jdk/jre/lib/i386/libglass.so \
+              /opt/jdk/jre/lib/i386/libgstreamer-lite.so \
+              /opt/jdk/jre/lib/i386/libjavafx*.so \
+              /opt/jdk/jre/lib/i386/libjfx*.so
 
-ENV JAVA_HOME "/usr/lib/jvm/java-8-openjdk-amd64"
+ENV JAVA_HOME /opt/jdk
+ENV PATH $PATH:$JAVA_HOME/bin
 
 #Install Maven
 RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
